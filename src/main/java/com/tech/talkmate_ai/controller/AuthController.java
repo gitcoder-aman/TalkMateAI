@@ -6,28 +6,28 @@ import com.tech.talkmate_ai.dto.auth.SignupRequest;
 import com.tech.talkmate_ai.dto.auth.UserProfileResponse;
 import com.tech.talkmate_ai.service.AuthService;
 import com.tech.talkmate_ai.service.UserService;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
+@FieldDefaults(makeFinal = true,level = AccessLevel.PRIVATE)
 public class AuthController {
 
-    private final AuthService authService;
-    private final UserService userService;
+    AuthService authService;
+    UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<AuthResponse>singUp(SignupRequest signupRequest){
+    public ResponseEntity<AuthResponse>singUp(@RequestBody SignupRequest signupRequest){
         return ResponseEntity.ok(authService.signUp(signupRequest));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse>login(LoginRequest loginRequest){
+    public ResponseEntity<AuthResponse>login(@RequestBody LoginRequest loginRequest){
         return ResponseEntity.ok(authService.login(loginRequest));
     }
 

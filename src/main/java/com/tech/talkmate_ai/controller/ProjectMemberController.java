@@ -2,6 +2,7 @@ package com.tech.talkmate_ai.controller;
 
 import com.tech.talkmate_ai.dto.member.InviteMemberRequest;
 import com.tech.talkmate_ai.dto.member.MemberResponse;
+import com.tech.talkmate_ai.dto.member.UpdateMemberRoleRequest;
 import com.tech.talkmate_ai.entity.ProjectMember;
 import com.tech.talkmate_ai.service.ProjectMemberService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class ProjectMemberController {
     private final ProjectMemberService projectMemberService;
 
     @GetMapping
-    public ResponseEntity<List<ProjectMember>>getProjectMembers(@PathVariable Long projectId){
+    public ResponseEntity<List<MemberResponse>>getProjectMembers(@PathVariable Long projectId){
         Long userId = 1L;
         return ResponseEntity.ok(projectMemberService.getProjectMembers(projectId,userId));
     }
@@ -35,10 +36,10 @@ public class ProjectMemberController {
     public ResponseEntity<MemberResponse>updateMemberRole(
             @PathVariable Long projectId,
             @PathVariable Long memberId,
-            InviteMemberRequest inviteMemberRequest
+            UpdateMemberRoleRequest updateMemberRoleRequest
     ){
         Long userId = 1L;
-        return ResponseEntity.ok(projectMemberService.updateMemberRole(projectId,memberId,inviteMemberRequest,userId));
+        return ResponseEntity.ok(projectMemberService.updateMemberRole(projectId,memberId,updateMemberRoleRequest,userId));
     }
     @DeleteMapping("/{memberId}")
     public ResponseEntity<MemberResponse>deleteMemberRole(

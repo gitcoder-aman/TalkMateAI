@@ -3,7 +3,7 @@ spring:
     name: talkmate-ai
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/TalkMateAI
+    url: jdbc:postgresql://localhost:9000/TalkMateAI
     username: postgres
     password: 3092
 
