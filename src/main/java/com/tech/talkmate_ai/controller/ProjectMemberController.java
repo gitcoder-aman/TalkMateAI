@@ -5,6 +5,7 @@ import com.tech.talkmate_ai.dto.member.MemberResponse;
 import com.tech.talkmate_ai.dto.member.UpdateMemberRoleRequest;
 import com.tech.talkmate_ai.entity.ProjectMember;
 import com.tech.talkmate_ai.service.ProjectMemberService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class ProjectMemberController {
         return ResponseEntity.ok(projectMemberService.getProjectMembers(projectId,userId));
     }
     @PostMapping
-    public ResponseEntity<MemberResponse>inviteMember(@PathVariable Long projectId,@RequestBody InviteMemberRequest inviteMemberRequest){
+    public ResponseEntity<MemberResponse>inviteMember(@PathVariable Long projectId,@RequestBody @Valid InviteMemberRequest inviteMemberRequest){
         Long userId = 1L;
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 projectMemberService.inviteMember(projectId,inviteMemberRequest,userId)
@@ -36,7 +37,7 @@ public class ProjectMemberController {
     public ResponseEntity<MemberResponse>updateMemberRole(
             @PathVariable Long projectId,
             @PathVariable Long memberId,
-            UpdateMemberRoleRequest updateMemberRoleRequest
+           @RequestBody @Valid UpdateMemberRoleRequest updateMemberRoleRequest
     ){
         Long userId = 1L;
         return ResponseEntity.ok(projectMemberService.updateMemberRole(projectId,memberId,updateMemberRoleRequest,userId));

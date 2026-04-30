@@ -18,4 +18,6 @@ public interface ProjectRepository extends JpaRepository<Project,Long> {
         ORDER BY p.updatedAt DESC
     """)
     List<Project> findAllAccessibleByUser(@Param("userId") Long userId);
+
+    Project findAccessibleProjectById(Long projectId, Long userId);
 }

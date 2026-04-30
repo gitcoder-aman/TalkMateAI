@@ -5,6 +5,7 @@ import com.tech.talkmate_ai.dto.project.ProjectResponse;
 import com.tech.talkmate_ai.dto.project.ProjectSummaryResponse;
 import com.tech.talkmate_ai.entity.Project;
 import com.tech.talkmate_ai.entity.User;
+import com.tech.talkmate_ai.error.ResourceNotFoundException;
 import com.tech.talkmate_ai.mapper.ProjectMapper;
 import com.tech.talkmate_ai.repository.ProjectRepository;
 import com.tech.talkmate_ai.repository.UserRepository;
@@ -15,6 +16,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,16 +57,33 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectResponse getUserProjectById(Long id) {
-        return null;
+        Project project = projectRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Project ", id));
+        return projectMapper.toProjectResponse(project);
     }
 
     @Override
     public ProjectResponse updateProject(Long id, ProjectRequest projectRequest, Long userId) {
-        return null;
+        Project project = projectRepository.findAccessibleProjectById(id,userId);
+        if(!project.getOwner().getId().equals(userId)){
+            throw new RuntimeException("You are not allowed to update the name");
+        }
+        project.setName(projectRequest.name());
+        project = projectRepository.save(project);
+        return projectMapper.toProjectResponse(project);
     }
 
     @Override
     public void softDelete(Long id, Long userId) {
-
+        Project project = getAccessibleProjectById(id,userId);
+        if(!project.getOwner().getId().equals(userId)){
+            throw new RuntimeException("You are not allowed to delete");
+        }
+        project.setDeletedAt(Instant.now());
+        projectRepository.save(project);
     }
+
+    public Project getAccessibleProjectById(Long projectId,Long userId){
+        return projectRepository.findAccessibleProjectById(projectId,userId);
+    }
+
 }
