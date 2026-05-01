@@ -56,14 +56,14 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ProjectResponse getUserProjectById(Long id) {
-        Project project = projectRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Project ", id));
+    public ProjectResponse getUserProjectById(Long id,Long userId) {
+        Project project = projectRepository.findAccessibleProjectById(id,userId).orElseThrow(()-> new ResourceNotFoundException("Project ", id));
         return projectMapper.toProjectResponse(project);
     }
 
     @Override
     public ProjectResponse updateProject(Long id, ProjectRequest projectRequest, Long userId) {
-        Project project = projectRepository.findAccessibleProjectById(id,userId);
+        Project project = projectRepository.findAccessibleProjectById(id,userId).orElseThrow(()->new ResourceNotFoundException("Project ", id));
         if(!project.getOwner().getId().equals(userId)){
             throw new RuntimeException("You are not allowed to update the name");
         }
@@ -83,7 +83,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     public Project getAccessibleProjectById(Long projectId,Long userId){
-        return projectRepository.findAccessibleProjectById(projectId,userId);
+        return projectRepository.findAccessibleProjectById(projectId,userId).orElseThrow(()->new ResourceNotFoundException("Project ", projectId));
     }
 
 }

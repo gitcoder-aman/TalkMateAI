@@ -5,7 +5,6 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import tools.jackson.databind.deser.impl.NullsAsEmptyProvider;
 
 import java.time.Instant;
 
@@ -16,7 +15,12 @@ import java.time.Instant;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "projects")
+@Table(name = "projects",
+        indexes = {
+                @Index(name = "idx_projects_updated_at_desc", columnList = "updated_at DESC, deleted_at"),
+                @Index(name = "idx_projects_deleted_at_updated_at_desc", columnList = "deleted_at,updated_at DESC"),
+                @Index(name = "idx_project_deleted_at", columnList = "deleted_at")
+        })
 public class Project {
 
     @Id
